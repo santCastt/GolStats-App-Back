@@ -2,6 +2,7 @@
 const express = require('express');
 const axios = require('axios');
 const verifyToken = require('../middleware/auth'); // <-- 1. Importamos el guardia
+const requirePremium = require('../middleware/premium'); // <-- 2. Importamos el filtro de Premium
 
 const router = express.Router();
 
@@ -36,6 +37,21 @@ router.get('/teams', verifyToken, async (req, res) => {
         console.error("🔥 ERROR EN THE SPORTS DB:", error.message);
         res.status(500).json({ error: 'Error al conectar con la API deportiva externa' });
     }
+});
+
+// Ruta: GET /api/sports/advanced-stats
+// Fíjate cómo ponemos a los DOS guardias en fila
+router.get('/advanced-stats', verifyToken, requirePremium, (req, res) => {
+    // Si el código llega hasta aquí, es porque el usuario está logueado Y es Premium
+    res.json({
+        message: "¡Bienvenido a la zona VIP de GolStats! 🌟",
+        data: {
+            possession: "65%",
+            expectedGoals: 2.4,
+            heatMapUrl: "https://ejemplo.com/mapa-calor-barcelona.jpg",
+            coachNotes: "El equipo está dominando el centro del campo. Se recomienda mantener la presión alta."
+        }
+    });
 });
 
 module.exports = router;

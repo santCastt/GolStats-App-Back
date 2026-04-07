@@ -20,7 +20,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('API GolStats funcionando 🚀');
+  res.send('API GolStats funcionando ');
 });
 
 // Ruta para registrar un nuevo usuario
@@ -126,6 +126,23 @@ app.post('/api/login', (req, res) => {
       }
     }
   );
+});
+
+// RUTA TEMPORAL (Solo para nosotros durante el desarrollo)
+// Convertimos a un usuario en Premium pasándole su email
+app.put('/api/upgrade-to-premium', (req, res) => {
+    const { email } = req.body;
+
+    db.run(
+        `UPDATE users SET isPremium = 1 WHERE email = ?`,
+        [email],
+        function (err) {
+            if (err) return res.status(500).json({ error: 'Error en la base de datos' });
+            if (this.changes === 0) return res.status(404).json({ error: 'Usuario no encontrado' });
+            
+            res.json({ message: `¡Éxito! El usuario ${email} ahora es PREMIUM 🏆` });
+        }
+    );
 });
  
 app.listen(PORT, () => {
