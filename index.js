@@ -14,10 +14,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Activar las rutas deportivas bajo el prefijo /api/sports
-app.use('/api/sports', sportsRoutes);
-app.use('/api/news', newsRoutes);
 app.use(cors());
 app.use(express.json());
+app.use('/api/sports', sportsRoutes);
+app.use('/api/news', newsRoutes);
 
 app.get('/', (req, res) => {
   res.send('API GolStats funcionando ');
@@ -86,6 +86,7 @@ app.post('/api/login', (req, res) => {
 
       try {
         const validPassword = await bcrypt.compare(password, user.password);
+        console.log("🕵️‍♂️ DATOS DEL USUARIO DESDE LA BD:", user);
         
         if (!validPassword) {
           return res.status(401).json({ error: 'Credenciales incorrectas' });
